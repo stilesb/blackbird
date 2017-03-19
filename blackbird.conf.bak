@@ -1,9 +1,5 @@
-# Blackbird Bitcoin Arbitrage
-# Configuration file
-
-
 # Program parameters
-DemoMode=true
+DemoMode=false
 UseFullCash=false
 CashForTesting=25.00
 MaxExposure=25000.00
@@ -24,7 +20,7 @@ UseVolatility=false
 VolatilityPeriod=600
 
 # Email settings
-SendEmail=false
+SendEmail=true
 SenderAddress=
 SenderUsername=
 SenderPassword=

@@ -4,7 +4,7 @@ override INC_DIR += -I ./src -I ./extern/sqlite3/include
 override LIB_DIR += -L .
 CFLAGS   := -std=c99
 CXXFLAGS := -Wall -pedantic -std=c++11
-LDFLAGS  := 
+LDFLAGS  :=
 LDLIBS   := -lsqlite3 -lcrypto -ljansson -lcurl
 CC       := gcc
 
@@ -59,3 +59,6 @@ $(EXEC): $(SQLITE3) $(OBJECTS)
 
 clean:
 	$(Q)rm -rf core $(OBJECTS)
+
+docker:
+	@docker-compose build

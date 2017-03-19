@@ -14,7 +14,7 @@ static typename std::iterator_traits<T>::value_type compute_sd(T first, const T 
 {
   using namespace std;
   typedef typename iterator_traits<T>::value_type value_type;
-  
+
   auto n  = distance(first, last);
   auto mu = accumulate(first, last, value_type()) / n;
   auto squareSum = inner_product(first, last, first, value_type());

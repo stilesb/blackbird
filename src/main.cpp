@@ -199,7 +199,7 @@ int main(int argc, char** argv) {
   csvFile << "TRADE_ID,EXCHANGE_LONG,EXHANGE_SHORT,ENTRY_TIME,EXIT_TIME,DURATION,TOTAL_EXPOSURE,BALANCE_BEFORE,BALANCE_AFTER,RETURN\n";
   csvFile.flush();
   // create the log file
-  std::string logFileName = "blackbird_log_" + currDateTime + ".log";
+  std::string logFileName = "/dev/stdout";
   std::ofstream logFile;
   logFile.open(logFileName.c_str(), std::ofstream::trunc);
   logFile.imbue(mylocale);
@@ -250,11 +250,6 @@ int main(int argc, char** argv) {
                      return tmp;
                    } );
 
-  // Check for restore.txt to see if the program exited with an open position.
-  Result res;
-  res.reset();
-  bool inMarket = res.loadPartialResult("restore.txt");
-
   // write the balances into the log file
   for (int i = 0; i < numExch; ++i) {
     logFile << "   " << params.exchName[i] << ":\t";
@@ -265,7 +260,7 @@ int main(int argc, char** argv) {
     } else {
       logFile << balance[i].usd << " USD\t" << std::setprecision(6) << balance[i].btc  << std::setprecision(2) << " BTC" << std::endl;
     }
-    if (balance[i].btc > 0.0300 && !inMarket) {
+    if (balance[i].btc > 0.0300) {
       logFile << "ERROR: All BTC accounts must be empty before starting Blackbird" << std::endl;
       return -1;
     }
@@ -293,8 +288,10 @@ int main(int argc, char** argv) {
   if (!params.verbose) {
     logFile << "Running..." << std::endl;
   }
-
+  bool inMarket = false;
   int resultId = 0;
+  Result res;
+  res.reset();
   unsigned currIteration = 0;
   bool stillRunning = true;
   time_t currTime;
@@ -445,11 +442,6 @@ int main(int argc, char** argv) {
                 }
               }
               logFile << "Done" << std::endl;
-
-              // Store the partial result to file in case
-              // the program exits before closing the position.
-              res.savePartialResult("restore.txt");
-
               longOrderId = 0;
               shortOrderId = 0;
               break;
@@ -547,10 +539,6 @@ int main(int argc, char** argv) {
             logFile << "Email sent" << std::endl;
           }
           res.reset();
-          // Remove restore.txt since this trade is done.
-          std::ofstream resFile;
-          resFile.open("restore.txt", std::ofstream::trunc);
-          resFile.close();
         }
       }
       if (params.verbose) logFile << '\n';

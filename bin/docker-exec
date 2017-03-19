@@ -1,0 +1,3 @@
+#!/bin/bash
+docker exec -it blackbird_blackbird_1 $@
+
